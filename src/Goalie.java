@@ -1,12 +1,21 @@
 
 public class Goalie implements Player{
-
+	private String name;
 	private int saves;
 	private int wins;
 	
-	public Goalie(int saves, int wins){
+	public Goalie(String name , int saves, int wins){
+		this.name = name;
 		this.saves = saves;
 		this.wins = wins;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getSaves() {

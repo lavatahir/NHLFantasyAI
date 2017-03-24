@@ -1,12 +1,13 @@
 
 public abstract class Skater implements Player{
-
+	private String name;
 	private int goals;
 	private int assists;
 	private int shots;
 	private int penaltyMins;
 	
-	public Skater(int goals, int assists, int shots, int penaltyMins){
+	public Skater(String name, int goals, int assists, int shots, int penaltyMins){
+		this.name = name;
 		this.goals = goals;
 		this.assists = assists;
 		this.shots = shots;
@@ -21,6 +22,13 @@ public abstract class Skater implements Player{
 		this.goals = goals;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	public int getAssists() {
 		return assists;
 	}
