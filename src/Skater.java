@@ -52,5 +52,10 @@ public abstract class Skater implements Player{
 	public void setPenaltyMins(int penaltyMins) {
 		this.penaltyMins = penaltyMins;
 	}
-	
+	public String toString(){
+		String s = "";
+		s+= name + "\n";
+		s+= "G:"+goals + " A:" + assists +  " S:" + shots + " PIM" + penaltyMins;
+		return s;
+	}
 }

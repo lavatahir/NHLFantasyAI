@@ -52,6 +52,13 @@ public class RosterGenerator {
 	public ArrayList<Player> getRoster() {
 		return roster;
 	}
-	
+	public Player getPlayer(String name){
+		for(Player p : roster){
+			if(p.getName().equals(name)){
+				return p;
+			}
+		}
+		return null;
+	}
 
 }

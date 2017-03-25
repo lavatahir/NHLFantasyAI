@@ -34,4 +34,10 @@ public class Goalie implements Player{
 		this.wins = wins;
 	}
 	
+	public String toString(){
+		String s = "";
+		s+= name + "\n";
+		s+= "W:"+ +wins + " Saves:" + saves;
+		return s;
+	}
 }
