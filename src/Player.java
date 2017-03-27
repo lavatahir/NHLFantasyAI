@@ -6,7 +6,7 @@ public interface Player {
 	public void setName(String name);
 	
 	public String toString();
-	
+	public boolean equals(Player p);
 	
 
 }

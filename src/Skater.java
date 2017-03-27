@@ -58,4 +58,15 @@ public abstract class Skater implements Player{
 		s+= "G:"+goals + " A:" + assists +  " S:" + shots + " PIM" + penaltyMins;
 		return s;
 	}
+	public boolean equals(Player p){
+		if(p instanceof Skater){
+			Skater s = (Skater) p;
+			if(s.getGoals() == this.getGoals() && s.getAssists() == this.getAssists()
+					&& s.getName().equals(this.getName()) && s.getShots() == this.getShots()
+					&& s.getPenaltyMins() == this.getPenaltyMins()){
+				return true;
+			}
+		}
+		return false;
+	}
 }

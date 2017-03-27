@@ -40,4 +40,12 @@ public class Goalie implements Player{
 		s+= "W:"+ +wins + " Saves:" + saves;
 		return s;
 	}
+	public boolean equals(Player p){
+		if(p instanceof Goalie){
+			if(((Goalie) p).getSaves() == this.getSaves() && ((Goalie) p).getWins() == this.getWins() && ((Goalie) p).getName().equals(this.getName())){
+				return true;
+			}
+		}
+		return false;
+	}
 }

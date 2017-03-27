@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Lineup {
+public class Lineup{
 
 	private ArrayList<ArrayList<Player>> lineup;
 	private ArrayList<Player> forwardLine;
@@ -18,49 +18,48 @@ public class Lineup {
 		rg = new RosterGenerator();
 	}
 	
-	public Lineup(ArrayList<ArrayList<Player>> lineup, ArrayList<Player> forwardLine, ArrayList<Player> defenseLine, ArrayList<Player> goalieLine,RosterGenerator rg){
-		this.lineup = lineup;
-		this.forwardLine = forwardLine;
-		this.defenseLine = defenseLine;
-		this.goalieLine = goalieLine;
-		this.rg = rg;
+	public Lineup(ArrayList<ArrayList<Player>> lineup, ArrayList<Player> forwardLine, ArrayList<Player> defenseLine, ArrayList<Player> goalieLine){
+		this.lineup = new ArrayList<ArrayList<Player>>(lineup);
+		this.forwardLine = new ArrayList<Player>(forwardLine);
+		this.defenseLine = new ArrayList<Player>(defenseLine);
+		this.goalieLine = new ArrayList<Player>(goalieLine);
 	}
 	public int playersInLineup(){
 		return forwardLine.size() + defenseLine.size() + goalieLine.size();
 	}
 	public void addPlayer(Player p){
-		if(lineup.size() < 5){
+		//Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
 			if(p instanceof Forward){
 				if(forwardLine.size() < 3){
-					lineup.get(0).add(p);
+					forwardLine.add(p);
 				}
 				else{
-					lineup.get(0).remove(lineup.get(0).size()-1);
-					lineup.get(0).add(p);
+					forwardLine.remove(forwardLine.size()-1);
+					forwardLine.add(p);
 				}
 			}
 			else if(p instanceof Defensemen){
-				if(lineup.get(1).size() < 2){
-					lineup.get(1).add(p);
+				if(defenseLine.size() < 2){
+					defenseLine.add(p);
 				}
 				else{
-					lineup.get(1).remove(lineup.get(1).size()-1);
-					lineup.get(1).add(p);
+					defenseLine.remove(defenseLine.size()-1);
+					defenseLine.add(p);
 				}
 			}
 			else if(p instanceof Goalie){
-				if(lineup.get(2).size() == 0){
-					lineup.get(2).add(p);
+				if(goalieLine.size() == 0){
+					goalieLine.add(p);
 				}
 				else{
-					lineup.get(2).remove(lineup.get(2).size()-1);
-					lineup.get(2).add(p);
+					goalieLine.remove(goalieLine.size()-1);
+					goalieLine.add(p);
 				}
 			}
-		}
 	}
 	public String toString(){
 		String s = "";
+		/*
 		for(int i = 0; i < lineup.size(); i++){
 			if(i == 0){
 				s+= "Forwards:\n";
@@ -76,37 +75,84 @@ public class Lineup {
 			}
 			s+="\n";
 		}
+		*/
+		s+= "Forwards:\n";
+		for(Player p : forwardLine){	
+			s+= p + "\n";
+			s+="\n";
+		}
+		s+= "Defensemen:\n";
+		for(Player p : defenseLine){	
+			s+= p + "\n";
+			s+="\n";
+		}
+		s+= "Goalie:\n";
+		for(Player p : goalieLine){	
+			s+= p + "\n";
+			s+="\n";
+		}
 		return s;
 	}
 	//fix this to include equals
 	public boolean containsPlayer(Player p){
-		if(forwardLine.contains(p)) return true;
-		else if (defenseLine.contains(p)) return true;
-		else if(goalieLine.contains(p)) return true;
-		
-		return false;
-	}
-	public HashSet<Lineup> generateSuccessors(){
-		HashSet<Lineup> successors = new HashSet<Lineup>();
-		Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
-		if(l.playersInLineup() < 5){
-			for(Player p : l.rg.roster){
-				if(!l.containsPlayer(p)){
-					System.out.println("WE HERE WITH"+p);
-					l.addPlayer(p);
-					successors.add(l);
-					return successors;
+		for(ArrayList<Player> line : lineup){
+			for(Player pLine : line){
+				if(p.equals(pLine)){
+					return true;
 				}
 			}
 		}
 		
+		return false;
+	}
+	public void combination(ArrayList<Forward> arr, int len, int startPosition, ArrayList<Player> forwards){
+	        if (len == 0){
+	            return;
+	        }       
+	        for (int i = startPosition; i <= arr.size()-len; i++){
+	        	forwards.set(forwards.size() - len, arr.get(i));
+	            combination(arr, len-1, i+1, forwards);
+	        }
+	    }  
+	public HashSet<Lineup> generateSuccessors(){
+		HashSet<Lineup> successors = new HashSet<Lineup>();
+		if(forwardLine.size() < 3){
+			int playersMissing = 3 - forwardLine.size();
+			for(int i = 0 ; i < playersMissing; i++){
+				Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine);
+				for(Player p : rg.roster){
+					if(!containsPlayer(p)){
+						l.addPlayer(p);
+					}
+				}
+				successors.add(l);
+			}
+			
+		}
+		
+		
+		//l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
+		//successors.add(l.addPlayer(rg.roster.get(2)));
+		/*
+		for(Player p : rg.roster){
+			Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
+			if(!l.containsPlayer(p)){
+				l.addPlayer(p);
+				successors.add(l);
+			}
+		}
+		*/
 		return successors;
 	}
 	public static void main(String[] args){
 		RosterGenerator rg = new RosterGenerator();
 		Lineup l = new Lineup();
-		
+		/*
 		l.addPlayer(rg.getPlayer("Crosby"));
+		l.addPlayer(rg.getPlayer("Backstrom"));
+		l.addPlayer(rg.getPlayer("Burrows"));
+		l.addPlayer(rg.getPlayer("Karlsson"));
+		l.addPlayer(rg.getPlayer("Krug"));*/
 		/*l.addPlayer(rg.getPlayer("Backstrom"));
 		l.addPlayer(rg.getPlayer("Burrows"));
 		l.addPlayer(rg.getPlayer("Granlund"));
@@ -116,7 +162,14 @@ public class Lineup {
 		
 		l.addPlayer(rg.getPlayer("Jones"));
 		l.addPlayer(rg.getPlayer("Condon"));*/
-		System.out.println(l);
-		System.out.println(l.generateSuccessors());
+		//System.out.println(l);
+		ArrayList<Player> forwards = new ArrayList<Player>();
+		l.combination(l.rg.getForwards(), 3, 0, forwards);
+		System.out.println(forwards);
+		//System.out.println(l.generateSuccessors());
+		
+		
 	}
+
+	
 }

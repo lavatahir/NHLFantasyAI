@@ -60,5 +60,32 @@ public class RosterGenerator {
 		}
 		return null;
 	}
-
+	public ArrayList<Forward> getForwards(){
+		ArrayList<Forward> forwards = new ArrayList<Forward>();
+		for(Player p : roster){
+			if(p instanceof Forward){
+				forwards.add((Forward)p);
+			}
+		}
+		return forwards;
+	}
+	public ArrayList<Defensemen> getDefensemen(){
+		ArrayList<Defensemen> defensemen = new ArrayList<Defensemen>();
+		for(Player p : roster){
+			if(p instanceof Defensemen){
+				defensemen.add((Defensemen)p);
+			}
+		}
+		return defensemen;
+	}
+	public ArrayList<Goalie> getGoalie(){
+		ArrayList<Goalie> goalie = new ArrayList<Goalie>();
+		for(Player p : roster){
+			if(p instanceof Goalie){
+				goalie.add((Goalie)p);
+			}
+		}
+		return goalie;
+	}
+	
 }
