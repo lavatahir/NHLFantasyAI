@@ -189,6 +189,34 @@ public class Lineup{
 		}
 		return false;
 	}
+	@Override
+    public int hashCode(){
+		int lineGoals = 0;
+		int lineAssists = 0;
+		int lineShots = 0;
+		int linePims = 0;
+		int lineWins = 0;
+		int lineSaves = 0;
+		for(Player p : forwardLine){
+			lineGoals += ((Forward) p).getGoals();
+			lineAssists += ((Forward) p).getAssists();
+			lineShots += ((Forward) p).getShots();
+			linePims += ((Forward) p).getPenaltyMins();
+		}
+		for(Player p : defenseLine){
+			lineGoals += ((Defensemen) p).getGoals();
+			lineAssists += ((Defensemen) p).getAssists();
+			lineShots += ((Defensemen) p).getShots();
+			linePims += ((Defensemen) p).getPenaltyMins();
+		}
+		for(Player p : goalieLine){
+			lineWins += ((Goalie) p).getWins();
+			lineSaves += ((Goalie) p).getSaves();
+		}
+        int result = 1;
+        result = lineGoals + lineAssists + lineShots +linePims +lineWins +lineSaves;
+        return result;
+	}
 	public static void main(String[] args){
 		RosterGenerator rg = new RosterGenerator();
 		System.out.println(rg.roster);
