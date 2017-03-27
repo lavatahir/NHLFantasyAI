@@ -7,6 +7,13 @@ public class Lineup{
 	private ArrayList<Player> defenseLine;
 	private ArrayList<Player> goalieLine;
 	private RosterGenerator rg;
+	private static final int goalsCap = 90;
+	private static final int assistsCap = 200;
+	private static final int shotsCap = 100;
+	private static final int pimsCap = 100;
+	private static final int winsCap = 30;
+	private static final int savesCap = 1500;
+	
 	public Lineup(){
 		lineup = new ArrayList<ArrayList<Player>>();
 		forwardLine = new ArrayList<Player>(3);
@@ -91,6 +98,7 @@ public class Lineup{
 			s+= p + "\n";
 			s+="\n";
 		}
+		s+="\n";
 		return s;
 	}
 	//fix this to include equals
@@ -116,6 +124,7 @@ public class Lineup{
 	    }  
 	public HashSet<Lineup> generateSuccessors(){
 		HashSet<Lineup> successors = new HashSet<Lineup>();
+		/*
 		if(forwardLine.size() < 3){
 			int playersMissing = 3 - forwardLine.size();
 			for(int i = 0 ; i < playersMissing; i++){
@@ -129,30 +138,68 @@ public class Lineup{
 			}
 			
 		}
+		*/
 		
 		
 		//l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
 		//successors.add(l.addPlayer(rg.roster.get(2)));
-		/*
+		
 		for(Player p : rg.roster){
-			Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
+			Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine);
 			if(!l.containsPlayer(p)){
 				l.addPlayer(p);
 				successors.add(l);
 			}
 		}
-		*/
+		
 		return successors;
+	}
+	public boolean isGoalState(){
+		
+		int lineGoals = 0;
+		int lineAssists = 0;
+		int lineShots = 0;
+		int linePims = 0;
+		int lineWins = 0;
+		int lineSaves = 0;
+		if(forwardLine.size() < 3 || defenseLine.size() < 2 || goalieLine.size() < 1){
+			return false;
+		}
+		for(Player p : forwardLine){
+			lineGoals += ((Forward) p).getGoals();
+			lineAssists += ((Forward) p).getAssists();
+			lineShots += ((Forward) p).getShots();
+			linePims += ((Forward) p).getPenaltyMins();
+		}
+		for(Player p : defenseLine){
+			lineGoals += ((Defensemen) p).getGoals();
+			lineAssists += ((Defensemen) p).getAssists();
+			lineShots += ((Defensemen) p).getShots();
+			linePims += ((Defensemen) p).getPenaltyMins();
+		}
+		for(Player p : goalieLine){
+			lineWins += ((Goalie) p).getWins();
+			lineSaves += ((Goalie) p).getSaves();
+		}
+		
+		if(lineGoals >= goalsCap && lineAssists >= assistsCap && lineShots >= shotsCap 
+				&& linePims >= pimsCap && lineWins >= winsCap && lineSaves >= savesCap){
+			System.out.println("G:"+lineGoals + " A:"+lineAssists + " Sh:"+lineShots + " PIMS:"+linePims + " W:"+lineWins + " Sa:"+lineSaves);
+			return true;
+		}
+		return false;
 	}
 	public static void main(String[] args){
 		RosterGenerator rg = new RosterGenerator();
+		System.out.println(rg.roster);
 		Lineup l = new Lineup();
-		/*
+		
 		l.addPlayer(rg.getPlayer("Crosby"));
 		l.addPlayer(rg.getPlayer("Backstrom"));
 		l.addPlayer(rg.getPlayer("Burrows"));
 		l.addPlayer(rg.getPlayer("Karlsson"));
-		l.addPlayer(rg.getPlayer("Krug"));*/
+		l.addPlayer(rg.getPlayer("Krug"));
+		l.addPlayer(rg.getPlayer("Jones"));
 		/*l.addPlayer(rg.getPlayer("Backstrom"));
 		l.addPlayer(rg.getPlayer("Burrows"));
 		l.addPlayer(rg.getPlayer("Granlund"));
@@ -163,10 +210,11 @@ public class Lineup{
 		l.addPlayer(rg.getPlayer("Jones"));
 		l.addPlayer(rg.getPlayer("Condon"));*/
 		//System.out.println(l);
-		ArrayList<Player> forwards = new ArrayList<Player>();
-		l.combination(l.rg.getForwards(), 3, 0, forwards);
-		System.out.println(forwards);
-		//System.out.println(l.generateSuccessors());
+		//ArrayList<Player> forwards = new ArrayList<Player>();
+		//l.combination(l.rg.getForwards(), 3, 0, forwards);
+		//System.out.println(forwards);
+		System.out.println(l.generateSuccessors());
+		System.out.println(l.isGoalState());
 		
 		
 	}
