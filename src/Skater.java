@@ -52,6 +52,11 @@ public abstract class Skater implements Player{
 	public void setPenaltyMins(int penaltyMins) {
 		this.penaltyMins = penaltyMins;
 	}
+	public boolean isBetter(Skater s){
+		int totalScore = goals + assists + shots + penaltyMins;
+		int sTotalScore = s.goals + s.assists + s.shots + s.penaltyMins;
+		return (totalScore > sTotalScore);
+	}
 	public String toString(){
 		String s = "";
 		s+= name + " ";

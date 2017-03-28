@@ -1,35 +1,41 @@
 import java.util.*;
 
+
 public class Lineup{
 
-	private ArrayList<ArrayList<Player>> lineup;
-	private ArrayList<Player> forwardLine;
-	private ArrayList<Player> defenseLine;
-	private ArrayList<Player> goalieLine;
+	private ArrayList<List<Player>> lineup;
+	private LinkedList<Player> forwardLine;
+	private LinkedList<Player> defenseLine;
+	private LinkedList<Player> goalieLine;
 	private static final RosterGenerator rg = new RosterGenerator();
 	private static final int goalsCap = 90;
 	private static final int assistsCap = 200;
 	private static final int shotsCap = 100;
 	private static final int pimsCap = 100;
-	private static final int winsCap = 30;
+	private static final int winsCap = 35;
 	private static final int savesCap = 1500;
 	
 	public Lineup(){
-		lineup = new ArrayList<ArrayList<Player>>();
-		forwardLine = new ArrayList<Player>(3);
-		defenseLine = new ArrayList<Player>(2);
-		goalieLine = new ArrayList<Player>(1);
+		lineup = new ArrayList<List<Player>>();
+		forwardLine = new LinkedList<Player>();
+		defenseLine = new LinkedList<Player>();
+		goalieLine = new LinkedList<Player>();
 		lineup.add(forwardLine);
 		lineup.add(defenseLine);
 		lineup.add(goalieLine);
+		
+		
+		addPlayer(rg.getPlayer("Crosby"));
+		addPlayer(rg.getPlayer("Mcquaid"));
+		addPlayer(rg.getPlayer("Jones"));
 		//rg = new RosterGenerator();
 	}
 	
-	public Lineup(ArrayList<ArrayList<Player>> lineup, ArrayList<Player> forwardLine, ArrayList<Player> defenseLine, ArrayList<Player> goalieLine){
-		this.lineup = new ArrayList<ArrayList<Player>>(lineup);
-		this.forwardLine = new ArrayList<Player>(forwardLine);
-		this.defenseLine = new ArrayList<Player>(defenseLine);
-		this.goalieLine = new ArrayList<Player>(goalieLine);
+	public Lineup(ArrayList<List<Player>> lineup, LinkedList<Player> forwardLine, LinkedList<Player> defenseLine, LinkedList<Player> goalieLine){
+		this.lineup = new ArrayList<List<Player>>(lineup);
+		this.forwardLine = new LinkedList<Player>(forwardLine);
+		this.defenseLine = new LinkedList<Player>(defenseLine);
+		this.goalieLine = new LinkedList<Player>(goalieLine);
 		//rg = new RosterGenerator();
 	}
 	public int playersInLineup(){
@@ -37,8 +43,8 @@ public class Lineup{
 	}
 	public void addPlayer(Player p){
 		//Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
-			if(p instanceof Forward){
-				if(forwardLine.size() < 3){
+			if(p instanceof Forward && !forwardLine.contains(p)){
+				if(forwardLine.size() < 3 && !forwardLine.contains(p)){
 					forwardLine.add(p);
 				}
 				else{
@@ -46,17 +52,20 @@ public class Lineup{
 					forwardLine.add(p);
 				}
 			}
-			else if(p instanceof Defensemen){
+			else if(p instanceof Defensemen && !defenseLine.contains(p)){
 				if(defenseLine.size() < 2){
-					defenseLine.add(p);
+					if(!defenseLine.contains(p)){
+						//defenseLine.add(p);
+						defenseLine.addFirst(p);
+					}
 				}
 				else{
 					defenseLine.remove(defenseLine.size()-1);
-					defenseLine.add(p);
+					defenseLine.addFirst(p);
 				}
 			}
-			else if(p instanceof Goalie){
-				if(goalieLine.size() == 0){
+			else if(p instanceof Goalie && !goalieLine.contains(p)){
+				if(goalieLine.size() == 0 && !goalieLine.contains(p)){
 					goalieLine.add(p);
 				}
 				else{
@@ -104,7 +113,7 @@ public class Lineup{
 	}
 	//fix this to include equals
 	public boolean containsPlayer(Player p){
-		for(ArrayList<Player> line : lineup){
+		for(List<Player> line : lineup){
 			for(Player pLine : line){
 				if(p.equals(pLine)){
 					return true;
@@ -125,13 +134,13 @@ public class Lineup{
 	    }  
 	public HashSet<Lineup> generateSuccessors(){
 		HashSet<Lineup> successors = new HashSet<Lineup>();
-		List<List<Forward>> forwardLineCombos = getForwardCombos();
+		/*List<List<Forward>> forwardLineCombos = getForwardCombos();
 		List<List<Defensemen>> DefenseLineCombos = getDefenseCombos();
 		ArrayList<Goalie> goalies = rg.getGoalies();
+		*/
 		
 		
 		
-		/*
 		for(Player p : rg.roster){
 			Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine);
 			if(!l.containsPlayer(p)){
@@ -139,7 +148,7 @@ public class Lineup{
 				successors.add(l);
 			}
 		}
-		*/
+		
 		return successors;
 	}
 	public boolean isGoalState(){
@@ -285,27 +294,44 @@ public class Lineup{
 	}
 	
 	
-	public void testList(List<Integer> test){
-	
+	public int getTotalScore(){
+		int lineGoals = 0;
+		int lineAssists = 0;
+		int lineShots = 0;
+		int linePims = 0;
+		int lineWins = 0;
+		int lineSaves = 0;
+		if(forwardLine.size() < 3 || defenseLine.size() < 2 || goalieLine.size() < 1){
+			return 0;
+		}
+		for(Player p : forwardLine){
+			lineGoals += ((Forward) p).getGoals();
+			lineAssists += ((Forward) p).getAssists();
+			lineShots += ((Forward) p).getShots();
+			linePims += ((Forward) p).getPenaltyMins();
+		}
+		for(Player p : defenseLine){
+			lineGoals += ((Defensemen) p).getGoals();
+			lineAssists += ((Defensemen) p).getAssists();
+			lineShots += ((Defensemen) p).getShots();
+			linePims += ((Defensemen) p).getPenaltyMins();
+		}
+		for(Player p : goalieLine){
+			lineWins += ((Goalie) p).getWins();
+			lineSaves += ((Goalie) p).getSaves();
+		}
+		
+		if(lineGoals >= goalsCap && lineAssists >= assistsCap && lineShots >= shotsCap 
+				&& linePims >= pimsCap && lineWins >= winsCap && lineSaves >= savesCap){
+			System.out.println("G:"+lineGoals + " A:"+lineAssists + " Sh:"+lineShots + " PIMS:"+linePims + " W:"+lineWins + " Sa:"+lineSaves);
+			return 100000;
+		}
+		return lineGoals + lineAssists + lineShots + linePims + lineWins + lineSaves;
 	}
 	public static void main(String[] args){
 		RosterGenerator rg = new RosterGenerator();
 		//System.out.println(rg.getForwards());
 		Lineup l = new Lineup();
-		
-		
-		
-		System.out.println(l.getForwardCombos().size());
-		System.out.println(l.getDefenseCombos().size());
-		
-		String list1[] = new String []{"A", "B", "C", "D"};
-		String list2[] = new String []{"E", "F", "G", "H"};
-		String list3[] = new String[]{};
-		for(String s : list1){
-			//for(int i = 0 ; i < ){
-				//list3
-			//}
-		}
 		
 		/*
 		l.addPlayer(rg.getPlayer("Crosby"));
@@ -329,6 +355,8 @@ public class Lineup{
 		//System.out.println(forwards);
 		//System.out.println(l.generateSuccessors());
 		//System.out.println(l.isGoalState());
+		
+		AStar.search(l, 't');
 		//BFSearch.search(l);
 		
 	}

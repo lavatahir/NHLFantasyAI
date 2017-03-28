@@ -62,6 +62,7 @@ public class BFSearch {
 		Queue<Node> queue = new LinkedList<Node>();
 
 		queue.add(root);
+		System.out.println(queue.size());
 
 		performSearch(queue);
 	}
@@ -94,7 +95,6 @@ public class BFSearch {
 			{
 				HashSet<Lineup> tempSuccessors = tempNode.getGameState().generateSuccessors(); 
 				for(Lineup s : tempSuccessors){
-					System.out.println(s + " size:" + visitedStates.size());
 					Node newNode = new Node(tempNode,s, tempNode.getCost()+ s.findCost(), 0);
 					if (newNode.getGameState().isGoalState()) {
 						Stack<Node> solutionPath = new Stack<Node>();
@@ -130,10 +130,10 @@ public class BFSearch {
 			{
 				Stack<Node> solutionPath = new Stack<Node>();
 				solutionPath.push(tempNode);
-				tempNode = tempNode.getParent();
-
+				
 				while (tempNode.getParent() != null)
 				{
+					tempNode = tempNode.getParent();
 					solutionPath.push(tempNode);
 					tempNode = tempNode.getParent();
 				}
