@@ -78,7 +78,7 @@ public class RosterGenerator {
 		}
 		return defensemen;
 	}
-	public ArrayList<Goalie> getGoalie(){
+	public ArrayList<Goalie> getGoalies(){
 		ArrayList<Goalie> goalie = new ArrayList<Goalie>();
 		for(Player p : roster){
 			if(p instanceof Goalie){

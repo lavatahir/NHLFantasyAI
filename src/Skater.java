@@ -54,7 +54,7 @@ public abstract class Skater implements Player{
 	}
 	public String toString(){
 		String s = "";
-		s+= name + "\n";
+		s+= name + " ";
 		s+= "G:"+goals + " A:" + assists +  " S:" + shots + " PIM" + penaltyMins;
 		return s;
 	}

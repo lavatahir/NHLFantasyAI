@@ -6,7 +6,7 @@ public class Lineup{
 	private ArrayList<Player> forwardLine;
 	private ArrayList<Player> defenseLine;
 	private ArrayList<Player> goalieLine;
-	private RosterGenerator rg;
+	private static final RosterGenerator rg = new RosterGenerator();
 	private static final int goalsCap = 90;
 	private static final int assistsCap = 200;
 	private static final int shotsCap = 100;
@@ -22,7 +22,7 @@ public class Lineup{
 		lineup.add(forwardLine);
 		lineup.add(defenseLine);
 		lineup.add(goalieLine);
-		rg = new RosterGenerator();
+		//rg = new RosterGenerator();
 	}
 	
 	public Lineup(ArrayList<ArrayList<Player>> lineup, ArrayList<Player> forwardLine, ArrayList<Player> defenseLine, ArrayList<Player> goalieLine){
@@ -30,6 +30,7 @@ public class Lineup{
 		this.forwardLine = new ArrayList<Player>(forwardLine);
 		this.defenseLine = new ArrayList<Player>(defenseLine);
 		this.goalieLine = new ArrayList<Player>(goalieLine);
+		//rg = new RosterGenerator();
 	}
 	public int playersInLineup(){
 		return forwardLine.size() + defenseLine.size() + goalieLine.size();
@@ -124,26 +125,13 @@ public class Lineup{
 	    }  
 	public HashSet<Lineup> generateSuccessors(){
 		HashSet<Lineup> successors = new HashSet<Lineup>();
+		List<List<Forward>> forwardLineCombos = getForwardCombos();
+		List<List<Defensemen>> DefenseLineCombos = getDefenseCombos();
+		ArrayList<Goalie> goalies = rg.getGoalies();
+		
+		
+		
 		/*
-		if(forwardLine.size() < 3){
-			int playersMissing = 3 - forwardLine.size();
-			for(int i = 0 ; i < playersMissing; i++){
-				Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine);
-				for(Player p : rg.roster){
-					if(!containsPlayer(p)){
-						l.addPlayer(p);
-					}
-				}
-				successors.add(l);
-			}
-			
-		}
-		*/
-		
-		
-		//l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
-		//successors.add(l.addPlayer(rg.roster.get(2)));
-		
 		for(Player p : rg.roster){
 			Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine);
 			if(!l.containsPlayer(p)){
@@ -151,7 +139,7 @@ public class Lineup{
 				successors.add(l);
 			}
 		}
-		
+		*/
 		return successors;
 	}
 	public boolean isGoalState(){
@@ -217,17 +205,115 @@ public class Lineup{
         result = lineGoals + lineAssists + lineShots +linePims +lineWins +lineSaves;
         return result;
 	}
+	public double findCost(){
+		return 1;
+	}
+	
+	public void subsetForwards(ArrayList<Forward> possiblecombos, int k, int start, int currLen, boolean[] used, ArrayList<Forward> allcombos) {
+		if (currLen == k) {
+			for (int i = 0; i < possiblecombos.size(); i++) {
+				if (used[i] == true) {
+					allcombos.add(possiblecombos.get(i));
+				}
+			}
+			
+			return;
+		}
+		if (start == possiblecombos.size()) {
+			return;
+		}
+		// For every index we have two options,
+		// 1.. Either we select it, means put true in used[] and make currLen+1
+		used[start] = true;
+		subsetForwards(possiblecombos, k, start + 1, currLen + 1, used, allcombos);
+		// 2.. OR we dont select it, means put false in used[] and dont increase
+		// currLen
+		used[start] = false;
+		subsetForwards(possiblecombos, k, start + 1, currLen, used, allcombos);
+	}
+	public void subsetDefense(ArrayList<Defensemen> possiblecombos, int k, int start, int currLen, boolean[] used, ArrayList<Defensemen> allcombos) {
+		if (currLen == k) {
+			for (int i = 0; i < possiblecombos.size(); i++) {
+				if (used[i] == true) {
+					allcombos.add(possiblecombos.get(i));
+				}
+			}
+			
+			return;
+		}
+		if (start == possiblecombos.size()) {
+			return;
+		}
+		// For every index we have two options,
+		// 1.. Either we select it, means put true in used[] and make currLen+1
+		used[start] = true;
+		subsetDefense(possiblecombos, k, start + 1, currLen + 1, used, allcombos);
+		// 2.. OR we dont select it, means put false in used[] and dont increase
+		// currLen
+		used[start] = false;
+		subsetDefense(possiblecombos, k, start + 1, currLen, used, allcombos);
+	}
+	static <T> List<List<T>> chopped(List<T> list, final int L) {
+	    List<List<T>> parts = new ArrayList<List<T>>();
+	    final int N = list.size();
+	    for (int i = 0; i < N; i += L) {
+	        parts.add(new ArrayList<T>(
+	            list.subList(i, Math.min(N, i + L)))
+	        );
+	    }
+	    return parts;
+	}
+	public List<List<Forward>> getForwardCombos(){
+		ArrayList<Forward> possiblecombos = rg.getForwards();
+		
+		ArrayList<Forward> allcombos = new ArrayList<Forward>();
+		boolean[] B = new boolean[possiblecombos.size()];
+		
+		subsetForwards(possiblecombos, 3, 0, 0, B, allcombos);
+		List<List<Forward>> forwardcombos = chopped(allcombos, 3);
+		return forwardcombos;
+	}
+	public List<List<Defensemen>> getDefenseCombos(){
+		ArrayList<Defensemen> possiblecombos = rg.getDefensemen();
+		
+		ArrayList<Defensemen> allcombos = new ArrayList<Defensemen>();
+		boolean[] B = new boolean[possiblecombos.size()];
+		
+		subsetDefense(possiblecombos, 3, 0, 0, B, allcombos);
+		List<List<Defensemen>> defensecombos = chopped(allcombos, 3);
+		return defensecombos;
+	}
+	
+	
+	public void testList(List<Integer> test){
+	
+	}
 	public static void main(String[] args){
 		RosterGenerator rg = new RosterGenerator();
-		System.out.println(rg.roster);
+		//System.out.println(rg.getForwards());
 		Lineup l = new Lineup();
 		
+		
+		
+		System.out.println(l.getForwardCombos().size());
+		System.out.println(l.getDefenseCombos().size());
+		
+		String list1[] = new String []{"A", "B", "C", "D"};
+		String list2[] = new String []{"E", "F", "G", "H"};
+		String list3[] = new String[]{};
+		for(String s : list1){
+			//for(int i = 0 ; i < ){
+				//list3
+			//}
+		}
+		
+		/*
 		l.addPlayer(rg.getPlayer("Crosby"));
 		l.addPlayer(rg.getPlayer("Backstrom"));
 		l.addPlayer(rg.getPlayer("Burrows"));
 		l.addPlayer(rg.getPlayer("Karlsson"));
 		l.addPlayer(rg.getPlayer("Krug"));
-		l.addPlayer(rg.getPlayer("Jones"));
+		l.addPlayer(rg.getPlayer("Jones"));*/
 		/*l.addPlayer(rg.getPlayer("Backstrom"));
 		l.addPlayer(rg.getPlayer("Burrows"));
 		l.addPlayer(rg.getPlayer("Granlund"));
@@ -241,11 +327,12 @@ public class Lineup{
 		//ArrayList<Player> forwards = new ArrayList<Player>();
 		//l.combination(l.rg.getForwards(), 3, 0, forwards);
 		//System.out.println(forwards);
-		System.out.println(l.generateSuccessors());
-		System.out.println(l.isGoalState());
-		
+		//System.out.println(l.generateSuccessors());
+		//System.out.println(l.isGoalState());
+		//BFSearch.search(l);
 		
 	}
+	
 
 	
 }
