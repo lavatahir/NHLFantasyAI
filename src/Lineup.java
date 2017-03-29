@@ -366,7 +366,8 @@ public class Lineup{
 		//System.out.println(l.generateSuccessors());
 		//System.out.println(l.isGoalState());
 		
-		SimpleHillClimb.search(l);
+		SteepHillClimb.search(l);
+		//SimpleHillClimb.search(l);
 		//AStar.search(l, 't');
 		//BFSearch.search(l);
 		
