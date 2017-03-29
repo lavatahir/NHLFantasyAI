@@ -328,6 +328,16 @@ public class Lineup{
 		}
 		return lineGoals + lineAssists + lineShots + linePims + lineWins + lineSaves;
 	}
+	public boolean goaliePass(){
+		return !goalieLine.isEmpty() && ((Goalie)goalieLine.getFirst()).getWins() > winsCap
+				&& ((Goalie)goalieLine.getFirst()).getSaves() > savesCap;
+	}
+	public boolean moreForwardPass(Lineup l){
+		return forwardLine.size() > l.forwardLine.size();
+	}
+	public boolean defensePass(){
+		return true;
+	}
 	public static void main(String[] args){
 		RosterGenerator rg = new RosterGenerator();
 		//System.out.println(rg.getForwards());
@@ -356,7 +366,8 @@ public class Lineup{
 		//System.out.println(l.generateSuccessors());
 		//System.out.println(l.isGoalState());
 		
-		AStar.search(l, 't');
+		SimpleHillClimb.search(l);
+		//AStar.search(l, 't');
 		//BFSearch.search(l);
 		
 	}

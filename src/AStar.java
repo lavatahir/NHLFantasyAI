@@ -12,6 +12,7 @@ public class AStar {
 		while (!q.isEmpty()) // while the queue is not empty
 		{
 			Node tempNode = (Node) q.poll();
+			
 	
 			if (!tempNode.getGameState().isGoalState())
 			{
@@ -28,17 +29,13 @@ public class AStar {
 	
 				for (Lineup s : tempSuccessors)
 				{
-					Node checkedNode = null;
-					if (heuristic == 't')
-					{
-						
-						checkedNode = new Node(tempNode,s, tempNode.getCost()+ s.findCost(),s.getTotalScore());
-					}
+					Node checkedNode = new Node(tempNode,s, tempNode.getCost()+ s.findCost(),s.getTotalScore());
 					
 					if (!checkRepeats(checkedNode))
 					{
 						nodeSuccessors.add(checkedNode);
 					}
+					
 				}
 	
 				if (nodeSuccessors.size() == 0)
@@ -48,10 +45,11 @@ public class AStar {
 	
 				for (int i = 0; i < nodeSuccessors.size(); i++)
 				{
-					if (lowestNode.getFCost() > nodeSuccessors.get(i)
+					if (lowestNode.getFCost() < nodeSuccessors.get(i)
 							.getFCost())
 					{
 						lowestNode = nodeSuccessors.get(i);
+						
 					}
 				}
 	
@@ -62,12 +60,12 @@ public class AStar {
 					if (nodeSuccessors.get(i).getFCost() == lowestValue)
 					{
 						q.add(nodeSuccessors.get(i));
+						
 					}
 				}
 			}
 			else
 			{
-				System.out.println("SOLVED");
 				Stack<Node> solutionPath = new Stack<Node>();
 				solutionPath.push(tempNode);
 				tempNode = tempNode.getParent();
