@@ -85,7 +85,7 @@ public class AStar {
 					System.out.println(tempNode.getGameState());
 					System.out.println();
 				}
-				System.out.println("The number of moves was: " + tempNode.getCost());
+				System.out.println("The number of moves was: " + (tempNode.getCost()+3));
 	
 				System.exit(0);
 			}

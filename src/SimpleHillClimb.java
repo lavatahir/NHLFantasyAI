@@ -9,10 +9,12 @@ public class SimpleHillClimb {
 	
 	public static void performSearch(Lineup l)
 	{
+		int cost = 3;
 		while(!l.isGoalState()){
 			HashSet<Lineup> neighbors = l.generateSuccessors();
 			for(Lineup nn : neighbors){
 				if(nn.isGoalState()){
+					System.out.println("The total cost was:"+cost);
 					System.exit(0);
 				}
 				else if(nn.moreForwardPass(l)){
@@ -22,9 +24,10 @@ public class SimpleHillClimb {
 					l = nn;
 				}
 			}
+			cost++;
 			System.out.println(l);
 		}
-		System.out.println(l);
+		//System.out.println(l);
 		
 		/*
 		while(!l.isGoalState()){
