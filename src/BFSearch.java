@@ -1,7 +1,4 @@
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 
 
@@ -10,54 +7,18 @@ public class BFSearch {
 	public BFSearch(){
 		//queue = new LinkedList<Integer>();
 	}
-	public static void bfsSolution(Lineup m){
-		Queue<Node> queue = new LinkedList<Node>();
-		HashSet<Lineup> visitedStates = new HashSet<Lineup>();
-		
-		queue.add(new Node(m,null));
-		
-		while(!(queue.isEmpty())){
-			Node currentNode = (Node) queue.poll();
-			if(currentNode.getGameState().isGoalState())
-			{
-				Stack<Node> solutionPath = new Stack<Node>();
-				solutionPath.push(currentNode);
-				currentNode = currentNode.getParent();
-
-				while (currentNode.getParent() != null)
-				{
-					solutionPath.push(currentNode);
-					currentNode = currentNode.getParent();
-				}
-				solutionPath.push(currentNode);
-
-				int loopSize = solutionPath.size();
-
-				for (int i = 0; i < loopSize; i++)
-				{
-					currentNode = solutionPath.pop();
-					System.out.println(currentNode.getGameState());
-				}
-				
-				System.exit(0);
-			}
-			else
-			{
-				visitedStates.add(currentNode.getGameState());
-				System.out.println("size of successors:" + currentNode.getGameState().generateSuccessors().size());
-				for(Lineup mSuc : currentNode.getGameState().generateSuccessors()){
-					queue.add(new Node(currentNode,mSuc, currentNode.getCost()+ mSuc.findCost(), 0));
-				}
-				
-			}
-		}
-
-		System.out.println("no solution");			
-	}
 	
 	
 	public static void search(Lineup l)
 	{
+		
+		l.addPlayer(l.randForward[l.r.nextInt(l.randForward.length)]);
+		System.out.println(l);
+		l.addPlayer(l.randDefense[l.r.nextInt(l.randDefense.length)]);
+		System.out.println(l);
+		l.addPlayer(l.randGoalie[l.r.nextInt(l.randGoalie.length)]);
+		System.out.println(l);
+		
 		Node root = new Node(l);
 		Queue<Node> queue = new LinkedList<Node>();
 
@@ -86,6 +47,7 @@ public class BFSearch {
 
 	public static void performSearch(Queue<Node> q)
 	{
+		
 		HashSet<Lineup> visitedStates = new HashSet<Lineup>();
 		while (!q.isEmpty()) 
 		{

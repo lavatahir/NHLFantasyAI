@@ -13,7 +13,9 @@ public abstract class Skater implements Player{
 		this.shots = shots;
 		this.penaltyMins = penaltyMins;
 	}
-
+	public Skater(){
+		this("worst",0,0,0,0);
+	}
 	public int getGoals() {
 		return goals;
 	}

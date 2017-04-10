@@ -9,6 +9,13 @@ public class SimpleHillClimb {
 	
 	public static void performSearch(Lineup l)
 	{
+		l.addPlayer(l.randForward[l.r.nextInt(l.randForward.length)]);
+		System.out.println(l);
+		l.addPlayer(l.randDefense[l.r.nextInt(l.randDefense.length)]);
+		System.out.println(l);
+		l.addPlayer(l.randGoalie[l.r.nextInt(l.randGoalie.length)]);
+		System.out.println(l);
+		
 		int cost = 3;
 		while(!l.isGoalState()){
 			HashSet<Lineup> neighbors = l.generateSuccessors();

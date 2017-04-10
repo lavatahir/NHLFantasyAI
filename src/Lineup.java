@@ -3,11 +3,15 @@ import java.util.*;
 
 public class Lineup{
 
-	private ArrayList<List<Player>> lineup;
-	private LinkedList<Player> forwardLine;
-	private LinkedList<Player> defenseLine;
+	private LinkedList<Skater> forwardLine;
+	private LinkedList<Skater> defenseLine;
 	private LinkedList<Player> goalieLine;
-	private static final RosterGenerator rg = new RosterGenerator();
+	static final RosterGenerator rg = new RosterGenerator();
+	static final Player[] randForward = new Player[] {rg.getPlayer("Crosby"), rg.getPlayer("Backstrom"), rg.getPlayer("Granlund")};
+	static final Player[] randDefense = new Player[] {rg.getPlayer("Barrie"), rg.getPlayer("Krug"), rg.getPlayer("Mcquaid")};
+	static final Player[] randGoalie = new Player[] {rg.getPlayer("Condon"), rg.getPlayer("Miller"), rg.getPlayer("Jones")};
+	
+	static Random r = new Random();
 	private static final int goalsCap = 90;
 	private static final int assistsCap = 200;
 	private static final int shotsCap = 100;
@@ -16,52 +20,41 @@ public class Lineup{
 	private static final int savesCap = 1500;
 	
 	public Lineup(){
-		lineup = new ArrayList<List<Player>>();
-		forwardLine = new LinkedList<Player>();
-		defenseLine = new LinkedList<Player>();
+		forwardLine = new LinkedList<Skater>();
+		defenseLine = new LinkedList<Skater>();
 		goalieLine = new LinkedList<Player>();
-		lineup.add(forwardLine);
-		lineup.add(defenseLine);
-		lineup.add(goalieLine);
-		
-		
-		addPlayer(rg.getPlayer("Crosby"));
-		addPlayer(rg.getPlayer("Mcquaid"));
-		addPlayer(rg.getPlayer("Jones"));
-		//rg = new RosterGenerator();
 	}
 	
-	public Lineup(ArrayList<List<Player>> lineup, LinkedList<Player> forwardLine, LinkedList<Player> defenseLine, LinkedList<Player> goalieLine){
-		this.lineup = new ArrayList<List<Player>>(lineup);
-		this.forwardLine = new LinkedList<Player>(forwardLine);
-		this.defenseLine = new LinkedList<Player>(defenseLine);
+	public Lineup(LinkedList<Skater> forwardLine, LinkedList<Skater> defenseLine, LinkedList<Player> goalieLine){
+		this.forwardLine = new LinkedList<Skater>(forwardLine);
+		this.defenseLine = new LinkedList<Skater>(defenseLine);
 		this.goalieLine = new LinkedList<Player>(goalieLine);
-		//rg = new RosterGenerator();
 	}
 	public int playersInLineup(){
 		return forwardLine.size() + defenseLine.size() + goalieLine.size();
 	}
 	public void addPlayer(Player p){
-		//Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine, rg);
 			if(p instanceof Forward && !forwardLine.contains(p)){
 				if(forwardLine.size() < 3 && !forwardLine.contains(p)){
-					forwardLine.add(p);
+					forwardLine.add((Skater)p);
 				}
 				else{
-					forwardLine.remove(forwardLine.size()-1);
-					forwardLine.add(p);
+					int index = getIndexWorstSkater(forwardLine);
+					forwardLine.remove(index);
+					forwardLine.add((Skater)p);
+					
 				}
 			}
 			else if(p instanceof Defensemen && !defenseLine.contains(p)){
 				if(defenseLine.size() < 2){
 					if(!defenseLine.contains(p)){
-						//defenseLine.add(p);
-						defenseLine.addFirst(p);
+						defenseLine.addFirst((Skater)p);
 					}
 				}
 				else{
-					defenseLine.remove(defenseLine.size()-1);
-					defenseLine.addFirst(p);
+					int index = getIndexWorstSkater(defenseLine);
+					defenseLine.remove(index);
+					defenseLine.addFirst((Skater)p);
 				}
 			}
 			else if(p instanceof Goalie && !goalieLine.contains(p)){
@@ -69,30 +62,28 @@ public class Lineup{
 					goalieLine.add(p);
 				}
 				else{
-					goalieLine.remove(goalieLine.size()-1);
+					goalieLine.remove();
+					//goalieLine.remove(goalieLine.size()-1);
 					goalieLine.add(p);
 				}
 			}
+			
 	}
+	private int getIndexWorstSkater(LinkedList<Skater> line) {
+		int index  = -1;
+		for (int i = 0; i < line.size(); i++){   
+			for (int j = 0; j < line.size(); j++) {
+				if(line.get(i).isBetter(line.get(j))) {
+					index = j;
+				}
+			}
+		}
+		return index;
+	}
+
 	public String toString(){
 		String s = "";
-		/*
-		for(int i = 0; i < lineup.size(); i++){
-			if(i == 0){
-				s+= "Forwards:\n";
-			}
-			else if(i == 1){
-				s+= "Defensemen:\n";
-			}
-			else if(i == 2){
-				s+= "Goalie:\n";
-			}
-			for(Player p : lineup.get(i)){
-				s+= p + "\n";
-			}
-			s+="\n";
-		}
-		*/
+
 		s+= "Forwards:\n";
 		for(Player p : forwardLine){	
 			s+= p + "\n";
@@ -111,15 +102,24 @@ public class Lineup{
 		s+="\n";
 		return s;
 	}
-	//fix this to include equals
+	
 	public boolean containsPlayer(Player p){
-		for(List<Player> line : lineup){
-			for(Player pLine : line){
-				if(p.equals(pLine)){
-					return true;
-				}
+		for(Player f : forwardLine){
+			if(p.equals(f)){
+				return true;
 			}
 		}
+		for(Player d : defenseLine){
+			if(p.equals(d)){
+				return true;
+			}
+		}
+		for(Player g : goalieLine){
+			if(p.equals(g)){
+				return true;
+			}
+		}
+		
 		
 		return false;
 	}
@@ -134,15 +134,9 @@ public class Lineup{
 	    }  
 	public HashSet<Lineup> generateSuccessors(){
 		HashSet<Lineup> successors = new HashSet<Lineup>();
-		/*List<List<Forward>> forwardLineCombos = getForwardCombos();
-		List<List<Defensemen>> DefenseLineCombos = getDefenseCombos();
-		ArrayList<Goalie> goalies = rg.getGoalies();
-		*/
-		
-		
 		
 		for(Player p : rg.roster){
-			Lineup l = new Lineup(lineup, forwardLine, defenseLine, goalieLine);
+			Lineup l = new Lineup(forwardLine, defenseLine, goalieLine);
 			if(!l.containsPlayer(p)){
 				l.addPlayer(p);
 				successors.add(l);
@@ -333,40 +327,18 @@ public class Lineup{
 				&& ((Goalie)goalieLine.getFirst()).getSaves() > savesCap;
 	}
 	public boolean moreForwardPass(Lineup l){
-		return forwardLine.size() > l.forwardLine.size();
+		return !forwardLine.isEmpty() && getTotalScore() == 100000;
 	}
 	public boolean defensePass(){
-		return true;
+		return !defenseLine.isEmpty() && getTotalScore() == 100000;
 	}
 	public static void main(String[] args){
 		RosterGenerator rg = new RosterGenerator();
-		//System.out.println(rg.getForwards());
 		Lineup l = new Lineup();
 		
-		/*
-		l.addPlayer(rg.getPlayer("Crosby"));
-		l.addPlayer(rg.getPlayer("Backstrom"));
-		l.addPlayer(rg.getPlayer("Burrows"));
-		l.addPlayer(rg.getPlayer("Karlsson"));
-		l.addPlayer(rg.getPlayer("Krug"));
-		l.addPlayer(rg.getPlayer("Jones"));*/
-		/*l.addPlayer(rg.getPlayer("Backstrom"));
-		l.addPlayer(rg.getPlayer("Burrows"));
-		l.addPlayer(rg.getPlayer("Granlund"));
-		l.addPlayer(rg.getPlayer("Karlsson"));
-		l.addPlayer(rg.getPlayer("Krug"));
-		l.addPlayer(rg.getPlayer("Green"));
+		System.out.println(l);
 		
-		l.addPlayer(rg.getPlayer("Jones"));
-		l.addPlayer(rg.getPlayer("Condon"));*/
-		//System.out.println(l);
-		//ArrayList<Player> forwards = new ArrayList<Player>();
-		//l.combination(l.rg.getForwards(), 3, 0, forwards);
-		//System.out.println(forwards);
-		//System.out.println(l.generateSuccessors());
-		//System.out.println(l.isGoalState());
-		
-		SteepHillClimb.search(l);
+		//SteepHillClimb.search(l);
 		//SimpleHillClimb.search(l);
 		//AStar.search(l, 't');
 		//BFSearch.search(l);
