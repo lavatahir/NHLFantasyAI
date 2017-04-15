@@ -333,6 +333,11 @@ public class Lineup{
 		return !defenseLine.isEmpty() && getTotalScore() == 100000;
 	}
 	public static void main(String[] args){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter the desired search. A-Star, BFS, SHC, or SSHC");
+		
+		String search = sc.next();
+		
 		Lineup l = new Lineup();
 		l.addPlayer(l.randForward[l.r.nextInt(l.randForward.length)]);
 		System.out.println(l);
@@ -340,25 +345,18 @@ public class Lineup{
 		System.out.println(l);
 		l.addPlayer(l.randGoalie[l.r.nextInt(l.randGoalie.length)]);
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		if(search.equals("BFS")){
+			BFSearch.search(l);
+		}
+		else if(search.equals("A-Star")){
+			AStar.search(l, 't');
+		}
+		else if(search.equals("SHC")){
+			SimpleHillClimb.search(l);
+		}
+		else if(search.equals("SSHC")){
+			SteepHillClimb.search(l);
+		}
 		
 		//SteepHillClimb.search(l);
 		//SimpleHillClimb.search(l);
