@@ -7,7 +7,7 @@ public class Lineup{
 	private LinkedList<Skater> defenseLine;
 	private LinkedList<Player> goalieLine;
 	static final RosterGenerator rg = new RosterGenerator();
-	static final Player[] randForward = new Player[] {rg.getPlayer("Crosby"), rg.getPlayer("Backstrom"), rg.getPlayer("Granlund")};
+	static final Player[] randForward = new Player[] {rg.getPlayer("Crosby"), rg.getPlayer("Backstrom")};
 	static final Player[] randDefense = new Player[] {rg.getPlayer("Barrie"), rg.getPlayer("Krug"), rg.getPlayer("Mcquaid")};
 	static final Player[] randGoalie = new Player[] {rg.getPlayer("Condon"), rg.getPlayer("Miller"), rg.getPlayer("Jones")};
 	
@@ -175,7 +175,7 @@ public class Lineup{
 		
 		if(lineGoals >= goalsCap && lineAssists >= assistsCap && lineShots >= shotsCap 
 				&& linePims >= pimsCap && lineWins >= winsCap && lineSaves >= savesCap){
-			System.out.println("G:"+lineGoals + " A:"+lineAssists + " Sh:"+lineShots + " PIMS:"+linePims + " W:"+lineWins + " Sa:"+lineSaves);
+			//System.out.println("G:"+lineGoals + " A:"+lineAssists + " Sh:"+lineShots + " PIMS:"+linePims + " W:"+lineWins + " Sa:"+lineSaves);
 			return true;
 		}
 		return false;
@@ -317,7 +317,7 @@ public class Lineup{
 		
 		if(lineGoals >= goalsCap && lineAssists >= assistsCap && lineShots >= shotsCap 
 				&& linePims >= pimsCap && lineWins >= winsCap && lineSaves >= savesCap){
-			System.out.println("G:"+lineGoals + " A:"+lineAssists + " Sh:"+lineShots + " PIMS:"+linePims + " W:"+lineWins + " Sa:"+lineSaves);
+			//System.out.println("G:"+lineGoals + " A:"+lineAssists + " Sh:"+lineShots + " PIMS:"+linePims + " W:"+lineWins + " Sa:"+lineSaves);
 			return 100000;
 		}
 		return lineGoals + lineAssists + lineShots + linePims + lineWins + lineSaves;
@@ -333,10 +333,32 @@ public class Lineup{
 		return !defenseLine.isEmpty() && getTotalScore() == 100000;
 	}
 	public static void main(String[] args){
-		RosterGenerator rg = new RosterGenerator();
 		Lineup l = new Lineup();
-		
+		l.addPlayer(l.randForward[l.r.nextInt(l.randForward.length)]);
 		System.out.println(l);
+		l.addPlayer(l.randDefense[l.r.nextInt(l.randDefense.length)]);
+		System.out.println(l);
+		l.addPlayer(l.randGoalie[l.r.nextInt(l.randGoalie.length)]);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		//SteepHillClimb.search(l);
 		//SimpleHillClimb.search(l);

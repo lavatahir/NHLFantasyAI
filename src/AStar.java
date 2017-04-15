@@ -4,13 +4,14 @@ import java.util.*;
 public class AStar {
 	public static void search(Lineup board, char heuristic)
 	{
+		/*
 		board.addPlayer(board.randForward[board.r.nextInt(board.randForward.length)]);
 		System.out.println(board);
 		board.addPlayer(board.randDefense[board.r.nextInt(board.randDefense.length)]);
 		System.out.println(board);
 		board.addPlayer(board.randGoalie[board.r.nextInt(board.randGoalie.length)]);
 		System.out.println(board);
-		
+		*/
 		
 		Node root = new Node(board,null);
 		Queue<Node> q = new LinkedList<Node>();

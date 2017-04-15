@@ -11,13 +11,14 @@ public class BFSearch {
 	
 	public static void search(Lineup l)
 	{
-		
+		/*
 		l.addPlayer(l.randForward[l.r.nextInt(l.randForward.length)]);
 		System.out.println(l);
 		l.addPlayer(l.randDefense[l.r.nextInt(l.randDefense.length)]);
 		System.out.println(l);
 		l.addPlayer(l.randGoalie[l.r.nextInt(l.randGoalie.length)]);
 		System.out.println(l);
+		*/
 		
 		Node root = new Node(l);
 		Queue<Node> queue = new LinkedList<Node>();
